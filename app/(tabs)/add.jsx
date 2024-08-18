@@ -5,13 +5,14 @@ import { View, StyleSheet, Alert } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Menu, TextInput } from "react-native-paper";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { doc, setDoc } from "firebase/firestore";
 
-const addEventToFirestore = async (event) => {
-  const eventsCollection = db.collection("events");
+const addEventToFirestore = (event) => {
+  const docRef = doc(db, "events");
   try {
-    const docRef = eventsCollection.doc();
-    await docRef.set(event);
-    console.log("Event added successfully");
+    setDoc(docRef, event).then((
+      alert("Event added successfully")
+    ));
   } catch (e) {
     console.error("Error adding document: ", e);
     Alert.alert("Error", "There was an error adding the event. Please try again.");
@@ -19,6 +20,7 @@ const addEventToFirestore = async (event) => {
 };
 
 const getIcon = (sport) => {
+  // Add more icons as needed
   if (sport === 'chess') {
     return 'chess-pawn';
   }
@@ -56,12 +58,23 @@ export default function Tab() {
   };
 
   const handleSubmit = async () => {
+    // Basic validation
     if (!name || !datetime || !location || !sport || !maxPlayers || !currentPlayers) {
       Alert.alert("Validation Error", "Please fill in all fields.");
       return;
     }
 
-    await addEventToFirestore({
+    // Logging to debug
+    console.log("Submitting event with data:", {
+      name,
+      datetime,
+      location,
+      sport,
+      max_players: parseInt(maxPlayers, 10),
+      current_players: parseInt(currentPlayers, 10),
+    });
+    
+    addEventToFirestore({
       name,
       datetime,
       location,
