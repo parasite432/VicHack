@@ -73,9 +73,9 @@ const CustomIcon = ({ IconComponent, name, color, size, focused }) => (
       >
         <Tabs.Screen name="index" options={{ headerShown: false }} />
         <Tabs.Screen name="favourites" options={{ headerShown: true, headerLeft: () => <GoBackBtn/> }} />
-        <Tabs.Screen name="add" options={{ headerShown: true }} />
-        <Tabs.Screen name="messages" options={{ headerShown: true }} />
-        <Tabs.Screen name="profile" options={{ headerShown: true }} />
+        <Tabs.Screen name="add" options={{ headerShown: true, headerLeft: () => <GoBackBtn/> }} />
+        <Tabs.Screen name="messages" options={{ headerShown: true, headerLeft: () => <GoBackBtn/> }} />
+        <Tabs.Screen name="profile" options={{ headerShown: true, headerLeft: () => <GoBackBtn/> }} />
       </Tabs>
     );
   }
