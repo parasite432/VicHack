@@ -24,6 +24,9 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "buildProperties": {
+        "google-services": "./google-services.json"
       }
     },
     "web": {

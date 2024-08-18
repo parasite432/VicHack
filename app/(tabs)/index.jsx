@@ -1,20 +1,21 @@
-import Item from '@/components/Item';
-import Search from '@/components/Searchbar';
+import EventList from '@/components/EventList';
 import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Tab() {
   return (
-    <View style={styles.container}>
-      <Search />
-      <Text>Home</Text>
-      <Item />
-    </View>
+    <SafeAreaView style={styles.container}>
+        <Text>Home</Text>
+        <EventList />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
