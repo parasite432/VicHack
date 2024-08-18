@@ -1,21 +1,20 @@
-// import { collection, addDoc } from "firebase/firestore";
-// import { db } from "../firebaseConfig";
-const admin = require('firebase-admin');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('./firebaseServiceAccountKey.json');
+const serviceAccount = require('./firebaseServiceSDK.json');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://your-database-name.firebaseio.com" // Replace with your database URL
+initializeApp({
+  credential: cert(serviceAccount),
 });
 
-const db = admin.firestore();
+const db = getFirestore();
+const sportsCollection = db.collection("sports");
 
-const addSportToFirestore = async (event) => {
+const addSportToFirestore = async (batch, sport) => {
   try {
-    const docRef = await addDoc(collection(db, "sports"), event);
-    console.log("Document written with ID: ", docRef.id);
+    const docRef = sportsCollection.doc();
+    batch.set(docRef, sport);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -66,7 +65,11 @@ const addAllSports = () => {
     },
   ];
 
-  sports.forEach((sport) => addSportToFirestore(sport));
+  var batch = db.batch();
+  sports.forEach((sport) => addSportToFirestore(batch, sport));
+  batch.commit().then(() => {
+    console.log("All sports added");
+  });
 };
 
 addAllSports();
