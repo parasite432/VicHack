@@ -6,6 +6,11 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/firestore"
+    ],
     "userInterfaceStyle": "automatic",
 "androidStatusBar": {
       "backgroundColor": "#F6F6EE",

@@ -1,8 +1,29 @@
-import { View, Text, StyleSheet, SafeAreaView, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { auth } from "../../firebaseConfig"; // Adjust this import path as needed
+import { signOut } from "firebase/auth";
+import { useRouter } from "expo-router";
 
 export default function Tab() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.replace("/login");
+    } catch (error) {
+      console.error("Error signing out: ", error);
+      // You might want to show an error message to the user here
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileContainer}>
@@ -52,7 +73,9 @@ export default function Tab() {
         </View>
       </View>
 
-      <Text style={styles.logout}> Logout</Text>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={styles.logout}>Logout</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -60,15 +83,17 @@ export default function Tab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+
     alignItems: "center",
+    backgroundColor: "#F6F6EE",
   },
   profileContainer: {
     height: 151,
     width: 325,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ACD1BF",
+
+    backgroundColor: "#f7f3f9",
     borderRadius: 16,
   },
   profilepic: {
