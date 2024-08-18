@@ -7,16 +7,30 @@ import {
   ActivityIndicator,
   Chip,
   Searchbar,
+  IconButton,
 } from "react-native-paper";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { db } from "../firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { useRouter } from "expo-router";
 
 export default function EventList() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [favorites, setFavorites] = useState([]);
+  const auth = getAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const q = query(collection(db, "events"));
@@ -27,11 +41,9 @@ export default function EventList() {
       });
       setEvents(eventList);
       setLoading(false);
-      // Store the events in AsyncStorage
       await AsyncStorage.setItem("events", JSON.stringify(eventList));
     });
 
-    // Check for internet connection and load from AsyncStorage if offline
     NetInfo.addEventListener((state) => {
       if (!state.isConnected) {
         AsyncStorage.getItem("events").then((storedEvents) => {
@@ -42,11 +54,39 @@ export default function EventList() {
       }
     });
 
+    // Fetch user's favorites
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      onSnapshot(userRef, (doc) => {
+        if (doc.exists()) {
+          setFavorites(doc.data().favorites || []);
+        }
+      });
+    }
+
     return () => unsubscribe();
-  }, []);
+  }, [auth.currentUser]);
+
+  const toggleFavorite = async (eventId) => {
+    if (!auth.currentUser) {
+      // Handle the case where the user is not logged in
+      console.log("User must be logged in to add favorites");
+      return;
+    }
+
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    if (favorites.includes(eventId)) {
+      await updateDoc(userRef, {
+        favorites: arrayRemove(eventId),
+      });
+    } else {
+      await updateDoc(userRef, {
+        favorites: arrayUnion(eventId),
+      });
+    }
+  };
 
   const renderEvent = ({ item }) => {
-    // Function to format the Firebase Timestamp
     const formatDate = (timestamp) => {
       if (!timestamp || !timestamp.seconds) {
         return "Date not available";
@@ -62,6 +102,8 @@ export default function EventList() {
       });
     };
 
+    const isFavorite = favorites.includes(item.id);
+
     return (
       <Card style={styles.card}>
         <Card.Content>
@@ -71,6 +113,11 @@ export default function EventList() {
           <Chip icon="tag" style={styles.chip}>
             {item.sport}
           </Chip>
+          <IconButton
+            icon={isFavorite ? "heart" : "heart-outline"}
+            onPress={() => toggleFavorite(item.id)}
+            color={isFavorite ? "red" : "grey"}
+          />
         </Card.Content>
       </Card>
     );
@@ -114,6 +161,7 @@ const styles = StyleSheet.create({
   card: {
     margin: 8,
     elevation: 4,
+    width: 300,
   },
   chip: {
     marginTop: 8,
@@ -129,5 +177,6 @@ const styles = StyleSheet.create({
   },
   searchbar: {
     margin: 8,
+    width: 300,
   },
 });
