@@ -90,7 +90,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="add"
         options={{
-          title: "Add new item",
+          title: "Add an event",
           headerStyle: { backgroundColor: "#F6F6EE" },
           headerShown: true,
           headerLeft: () => <GoBackBtn />,

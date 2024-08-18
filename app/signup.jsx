@@ -5,19 +5,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 import { useRouter } from "expo-router";
-
-const sports = [
-  "cricket",
-  "football",
-  "rugby",
-  "basketball",
-  "golf",
-  "soccer",
-  "tennis",
-  "badminton",
-  "chess",
-  "table-tennis",
-];
+import { sports } from "@/data/sports";
 
 export default function SignUp() {
   const [name, setName] = useState("");
