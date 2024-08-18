@@ -38,15 +38,14 @@ export default function Tab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: 10,
     alignItems: "center",
-    marginTop: StatusBar.currentHeight || 0,
-    backgroundColor: "#",
+    backgroundColor: "#F6F6EE",
   },
 
   outer: {
     backgroundColor: "#ACD1BF",
-    height: "85%",
+    height: "93%",
     width: "85%",
     borderRadius: 16,
     paddingLeft: 10,
