@@ -45,36 +45,41 @@ export default function EventList() {
     return () => unsubscribe();
   }, []);
 
-  const renderEvent = ({ item }) => (
-    <Card style={styles.card}>
-      <Card.Content>
-        <Title>{item.name}</Title>
-        {/* show the time as dd/mm/yyyy hh:mm am/pm */}
-        <Paragraph>
-          {
-            // format the time to show as dd/mm/yyyy hh:mm am/pm
-            new Date(item.datetime.seconds * 1000).toLocaleString("en-AU", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })
-          }
-        </Paragraph>
-        <Paragraph>{item.location}</Paragraph>
-        <Chip icon="tag" style={styles.chip}>
-          {item.sport}
-        </Chip>
-      </Card.Content>
-    </Card>
-  );
+  const renderEvent = ({ item }) => {
+    // Function to format the Firebase Timestamp
+    const formatDate = (timestamp) => {
+      if (!timestamp || !timestamp.seconds) {
+        return "Date not available";
+      }
+      const date = new Date(timestamp.seconds * 1000);
+      return date.toLocaleString("en-AU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    };
+
+    return (
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title>{item.name}</Title>
+          <Paragraph>{formatDate(item.datetime)}</Paragraph>
+          <Paragraph>{item.location}</Paragraph>
+          <Chip icon="tag" style={styles.chip}>
+            {item.sport}
+          </Chip>
+        </Card.Content>
+      </Card>
+    );
+  };
 
   const filteredEvents = events.filter(
     (event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.sport.toLowerCase().includes(searchQuery.toLowerCase())
+      event.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.sport?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
