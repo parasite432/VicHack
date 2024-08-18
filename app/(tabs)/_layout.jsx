@@ -1,8 +1,9 @@
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import { Tabs, useNavigation } from 'expo-router';
 import {View} from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const CustomIcon = ({ IconComponent, name, color, size, focused }) => (
     <View style={{
@@ -17,6 +18,15 @@ const CustomIcon = ({ IconComponent, name, color, size, focused }) => (
     </View>
   );
   
+  const GoBackBtn = () => {
+    const navigation = useNavigation();
+    return (
+      <TouchableOpacity style={{ padding: 10 }} onPress={() => navigation.goBack()}>
+        <Ionicons name="chevron-back" size={24} color="black" />
+      </TouchableOpacity>
+    );
+  };
+
   export default function TabLayout() {
     return (
       <Tabs
@@ -62,10 +72,10 @@ const CustomIcon = ({ IconComponent, name, color, size, focused }) => (
         })}
       >
         <Tabs.Screen name="index" options={{ headerShown: false }} />
-        <Tabs.Screen name="favourites" options={{ headerShown: false }} />
-        <Tabs.Screen name="add" options={{ headerShown: false }} />
-        <Tabs.Screen name="messages" options={{ headerShown: false }} />
-        <Tabs.Screen name="profile" options={{ headerShown: false }} />
+        <Tabs.Screen name="favourites" options={{ headerShown: true, headerLeft: () => <GoBackBtn/> }} />
+        <Tabs.Screen name="add" options={{ headerShown: true }} />
+        <Tabs.Screen name="messages" options={{ headerShown: true }} />
+        <Tabs.Screen name="profile" options={{ headerShown: true }} />
       </Tabs>
     );
   }
