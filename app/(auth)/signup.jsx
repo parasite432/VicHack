@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView } from "react-native";
 import { TextInput, Button, Text, HelperText, Menu } from "react-native-paper";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 import { useRouter } from "expo-router";
 import { sports } from "@/data/sports";
 
